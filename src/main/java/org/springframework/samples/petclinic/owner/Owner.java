@@ -18,18 +18,13 @@ package org.springframework.samples.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
+import org.springframework.samples.petclinic.notification.NotificationPreference;
 import org.springframework.util.Assert;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotBlank;
 
@@ -60,6 +55,14 @@ public class Owner extends Person {
 	@Pattern(regexp = "\\d{10}", message = "{telephone.invalid}")
 	private String telephone;
 
+	@Column(name = "email")
+	@Email
+	private String email;
+
+	@Column(name = "notification_preference")
+	@Enumerated(EnumType.STRING)
+	private NotificationPreference notificationPreference = NotificationPreference.NONE;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "owner_id")
 	@OrderBy("name")
@@ -87,6 +90,22 @@ public class Owner extends Person {
 
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public NotificationPreference getNotificationPreference() {
+		return this.notificationPreference;
+	}
+
+	public void setNotificationPreference(NotificationPreference notificationPreference) {
+		this.notificationPreference = notificationPreference;
 	}
 
 	public List<Pet> getPets() {
@@ -152,6 +171,8 @@ public class Owner extends Person {
 			.append("address", this.address)
 			.append("city", this.city)
 			.append("telephone", this.telephone)
+			.append("email", this.email)
+			.append("notificationPreference", this.notificationPreference)
 			.toString();
 	}
 
