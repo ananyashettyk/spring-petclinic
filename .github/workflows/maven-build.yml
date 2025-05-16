@@ -19,11 +19,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK ${{matrix.java}}
         uses: actions/setup-java@v4
         with:
           java-version: ${{matrix.java}}
           distribution: 'adopt'
           cache: maven
+
+      - name: Make Maven wrapper executable
+        run: chmod +x ./mvnw
+
       - name: Build with Maven Wrapper
         run: ./mvnw -B verify
