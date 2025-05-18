@@ -42,6 +42,12 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   implementation 'javax.cache:cache-api'
   implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
+// For Twilio SDK
+  implementation 'com.twilio.sdk:twilio:9.7.0' // Use the latest version
+
+// For Jakarta Mail
+  implementation 'jakarta.mail:jakarta.mail-api:2.1.2'
+  implementation 'org.eclipse.angus:jakarta.mail:2.0.2' // Implementation of Jakarta Mail
   runtimeOnly 'org.springframework.boot:spring-boot-starter-actuator'
   runtimeOnly "org.webjars:webjars-locator-lite:${webjarsLocatorLiteVersion}"
   runtimeOnly "org.webjars.npm:bootstrap:${webjarsBootstrapVersion}"
