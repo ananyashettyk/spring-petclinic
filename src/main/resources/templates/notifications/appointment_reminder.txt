@@ -1,0 +1,8 @@
+Dear {ownerFirstName},
+
+This is a reminder about your pet {petName}'s upcoming appointment at Pet Clinic on {visitDate}.
+
+Please arrive 10 minutes before your scheduled time. If you need to reschedule, please call us at (555) 123-4567.
+
+Thank you,
+Pet Clinic Staff

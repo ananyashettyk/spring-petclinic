@@ -1,0 +1,7 @@
+Dear {ownerFirstName},
+
+This is a reminder that your {petType}, {petName}, is due for vaccinations. Regular vaccinations are essential for your pet's health and well-being.
+
+Please schedule an appointment at your earliest convenience by calling (555) 123-4567 or visiting our website.
+
+Thank you, Pet Clinic Staff
