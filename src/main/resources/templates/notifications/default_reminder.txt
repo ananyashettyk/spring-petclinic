@@ -1,0 +1,8 @@
+Dear {ownerFirstName},
+
+This is a notification from Pet Clinic regarding your pet.
+
+Thank you for choosing our services.
+
+Regards,
+Pet Clinic Staff

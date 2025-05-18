@@ -1,0 +1,8 @@
+ExportPublishDear {ownerFirstName},
+
+This is a reminder to administer medication to your {petType}, {petName}, according to the schedule provided by your veterinarian.
+
+Regular medication is important for your pet's health. If you have any questions or concerns about the medication, please contact us.
+
+Thank you,
+Pet Clinic Staff
