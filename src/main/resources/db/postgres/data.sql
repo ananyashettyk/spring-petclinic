@@ -71,3 +71,45 @@ INSERT INTO visits (pet_id, visit_date, description) SELECT 7, '2010-03-04', 'ra
 INSERT INTO visits (pet_id, visit_date, description) SELECT 8, '2011-03-04', 'rabies shot' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=2);
 INSERT INTO visits (pet_id, visit_date, description) SELECT 8, '2009-06-04', 'neutered' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=3);
 INSERT INTO visits (pet_id, visit_date, description) SELECT 7, '2008-09-04', 'spayed' WHERE NOT EXISTS (SELECT * FROM visits WHERE id=4);
+
+-- Sample data for notifications table
+INSERT INTO notifications (message, type, status, scheduled_time, sent_time, owner_id, pet_id)
+  SELECT 'Reminder: Your appointment with Dr. Carter for Leo is tomorrow at 10:00 AM', 'EMAIL', 'PENDING', '2025-05-20 10:00:00', NULL, 1, 1
+  WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=1);
+
+INSERT INTO notifications (message, type, status, scheduled_time, sent_time, owner_id, pet_id)
+  SELECT 'Reminder: Basil is due for annual checkup next week', 'SMS', 'SENT', '2025-05-15 09:00:00', '2025-05-15 09:05:23', 2, 2
+  WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=2);
+
+INSERT INTO notifications (message, type, status, scheduled_time, sent_time, owner_id, pet_id)
+  SELECT 'Time for Rosy''s heartworm medication', 'EMAIL', 'PENDING', '2025-05-25 08:00:00', NULL, 3, 3
+  WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=3);
+
+INSERT INTO notifications (message, type, status, scheduled_time, sent_time, owner_id, pet_id)
+  SELECT 'Reminder: Jewel has an appointment on Monday for vaccinations', 'SMS', 'FAILED', '2025-05-18 11:00:00', '2025-05-18 11:02:45', 3, 4
+  WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=4);
+
+INSERT INTO notifications (message, type, status, scheduled_time, sent_time, owner_id, pet_id)
+  SELECT 'Reminder: Iggy''s dental cleaning is scheduled for next Friday', 'EMAIL', 'SENT', '2025-05-10 14:00:00', '2025-05-10 14:01:12', 4, 5
+  WHERE NOT EXISTS (SELECT * FROM notifications WHERE id=5);
+
+-- Sample data for notification_schedules table
+INSERT INTO notification_schedules (message_template, type, scheduled_time, days_before, enabled, owner_id, pet_id, visit_id)
+  SELECT 'Reminder: Your pet {petName} has an appointment tomorrow', 'EMAIL', '2025-06-15 09:00:00', 1, TRUE, 1, 1, 1
+  WHERE NOT EXISTS (SELECT * FROM notification_schedules WHERE id=1);
+
+INSERT INTO notification_schedules (message_template, type, scheduled_time, days_before, enabled, owner_id, pet_id, visit_id)
+  SELECT 'Time for {petName}''s annual checkup', 'SMS', '2025-06-20 10:00:00', NULL, TRUE, 2, 2, NULL
+  WHERE NOT EXISTS (SELECT * FROM notification_schedules WHERE id=2);
+
+INSERT INTO notification_schedules (message_template, type, scheduled_time, days_before, enabled, owner_id, pet_id, visit_id)
+  SELECT '{petName} is due for heartworm medication', 'BOTH', '2025-06-10 08:00:00', NULL, TRUE, 3, 3, NULL
+  WHERE NOT EXISTS (SELECT * FROM notification_schedules WHERE id=3);
+
+INSERT INTO notification_schedules (message_template, type, scheduled_time, days_before, enabled, owner_id, pet_id, visit_id)
+  SELECT 'Reminder: {petName}''s vaccines are due', 'EMAIL', '2025-07-05 11:00:00', 7, TRUE, 4, 5, 2
+  WHERE NOT EXISTS (SELECT * FROM notification_schedules WHERE id=4);
+
+INSERT INTO notification_schedules (message_template, type, scheduled_time, days_before, enabled, owner_id, pet_id, visit_id)
+  SELECT 'Reminder: {petName} has a follow-up appointment scheduled', 'SMS', '2025-07-15 14:00:00', 2, FALSE, 6, 7, 4
+  WHERE NOT EXISTS (SELECT * FROM notification_schedules WHERE id=5);
