@@ -7,8 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.owner.Owner;
 import org.springframework.samples.petclinic.owner.OwnerRepository;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -17,14 +22,13 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * REST Controller for handling notification-related API endpoints. Provides
+ * Controller for handling notification-related endpoints and web interfaces. Provides
  * functionalities for retrieving notifications, updating notification preferences, and
  * testing the notification system.
  *
  * @author Claude
  */
-@RestController
-@RequestMapping("/api")
+@Controller
 public class NotificationController {
 
 	private static final Logger log = LoggerFactory.getLogger(NotificationController.class);
@@ -50,12 +54,66 @@ public class NotificationController {
 		this.templateService = templateService;
 	}
 
+	@InitBinder
+	public void setAllowedFields(WebDataBinder dataBinder) {
+		dataBinder.setDisallowedFields("id");
+	}
+
+	/**
+	 * Display the form for updating notification preferences
+	 * @param ownerId the ID of the owner
+	 * @param model the model to add attributes to
+	 * @return the view name
+	 */
+	@GetMapping("/owners/{ownerId}/notification-preferences")
+	public String showNotificationPreferencesForm(@PathVariable("ownerId") int ownerId, Model model) {
+		Owner owner = this.ownerRepository.findById(ownerId)
+			.orElseThrow(
+					() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found with ID: " + ownerId));
+		model.addAttribute("owner", owner);
+		return "owners/notificationPreferencesForm";
+	}
+
+	/**
+	 * Process the form submission for updating notification preferences
+	 * @param owner the owner with updated preferences
+	 * @param ownerId the ID of the owner
+	 * @param result the binding result
+	 * @param redirectAttributes attributes for redirect
+	 * @return the redirect URL
+	 */
+	@PostMapping("/owners/{ownerId}/notification-preferences")
+	public String processNotificationPreferencesForm(Owner owner, @PathVariable("ownerId") int ownerId,
+			BindingResult result, RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			return "owners/notificationPreferencesForm";
+		}
+
+		Owner existingOwner = this.ownerRepository.findById(ownerId)
+			.orElseThrow(
+					() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Owner not found with ID: " + ownerId));
+
+		// Update only the notification-related fields
+		existingOwner.setEmail(owner.getEmail());
+		existingOwner.setNotificationPreference(owner.getNotificationPreference());
+
+		this.ownerRepository.save(existingOwner);
+		redirectAttributes.addFlashAttribute("message", "Notification preferences updated successfully");
+
+		log.info("Updated notification preference for owner {}: {}", ownerId, owner.getNotificationPreference());
+		return "redirect:/owners/" + ownerId;
+	}
+
+	// REST API ENDPOINTS
+
 	/**
 	 * Get all notifications for a specific owner.
 	 * @param ownerId the ID of the owner whose notifications to retrieve
 	 * @return a list of notifications
 	 */
-	@GetMapping("/notifications")
+	@GetMapping("/api/notifications")
+	@ResponseBody
 	public ResponseEntity<List<Notification>> getNotifications(@RequestParam(required = false) Integer ownerId) {
 		List<Notification> notifications;
 
@@ -74,12 +132,13 @@ public class NotificationController {
 	}
 
 	/**
-	 * Update an owner's notification preferences.
+	 * Update an owner's notification preferences via API.
 	 * @param ownerId the ID of the owner to update
 	 * @param preferenceRequest the request containing the new preference
 	 * @return the updated owner details
 	 */
-	@PutMapping("/owners/{ownerId}/notification-preferences")
+	@PutMapping("/api/owners/{ownerId}/notification-preferences")
+	@ResponseBody
 	public ResponseEntity<Map<String, Object>> updateNotificationPreference(@PathVariable Integer ownerId,
 			@RequestBody NotificationPreferenceRequest preferenceRequest) {
 
@@ -115,7 +174,8 @@ public class NotificationController {
 	 * @param testRequest the request containing the owner ID and optional message
 	 * @return the result of the notification test
 	 */
-	@PostMapping("/notifications/test")
+	@PostMapping("/api/notifications/test")
+	@ResponseBody
 	public ResponseEntity<Map<String, Object>> testNotification(@RequestBody TestNotificationRequest testRequest) {
 		Optional<Owner> ownerOpt = ownerRepository.findById(testRequest.getOwnerId());
 		if (ownerOpt.isEmpty()) {
