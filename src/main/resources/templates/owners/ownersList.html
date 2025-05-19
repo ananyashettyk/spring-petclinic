@@ -13,6 +13,8 @@
     <th th:text="#{address}" style="width: 200px;">Address</th>
     <th th:text="#{city}">City</th>
     <th th:text="#{telephone}" style="width: 120px">Telephone</th>
+    <th>Email</th>
+    <th>Notification</th>
     <th th:text="#{pets}">Pets</th>
   </tr>
   </thead>
@@ -24,6 +26,8 @@
     <td th:text="${owner.address}"/>
     <td th:text="${owner.city}"/>
     <td th:text="${owner.telephone}"/>
+    <td th:text="${owner.email}"/>
+    <td th:text="${owner.notificationPreference}"/>
     <td><span th:text="${#strings.listJoin(owner.pets, ', ')}"/></td>
   </tr>
   </tbody>
@@ -59,4 +63,3 @@
 </div>
 </body>
 </html>
-
