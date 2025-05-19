@@ -55,3 +55,37 @@ CREATE TABLE IF NOT EXISTS visits (
   description VARCHAR(255),
   FOREIGN KEY (pet_id) REFERENCES pets(id)
 ) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  message VARCHAR(255) NOT NULL,
+  type VARCHAR(30) NOT NULL,
+  status VARCHAR(30) NOT NULL,
+  scheduled_time DATETIME NOT NULL,
+  sent_time DATETIME,
+  owner_id INT(4) UNSIGNED NOT NULL,
+  pet_id INT(4) UNSIGNED,
+  INDEX(owner_id),
+  INDEX(pet_id),
+  INDEX(status),
+  FOREIGN KEY (owner_id) REFERENCES owners(id),
+  FOREIGN KEY (pet_id) REFERENCES pets(id)
+) engine=InnoDB;
+
+CREATE TABLE IF NOT EXISTS notification_schedules (
+  id INT(4) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  message_template VARCHAR(255) NOT NULL,
+  type VARCHAR(30) NOT NULL,
+  scheduled_time DATETIME NOT NULL,
+  days_before INT(4),
+  enabled BOOLEAN DEFAULT TRUE,
+  owner_id INT(4) UNSIGNED NOT NULL,
+  pet_id INT(4) UNSIGNED,
+  visit_id INT(4) UNSIGNED,
+  INDEX(owner_id),
+  INDEX(pet_id),
+  INDEX(visit_id),
+  FOREIGN KEY (owner_id) REFERENCES owners(id),
+  FOREIGN KEY (pet_id) REFERENCES pets(id),
+  FOREIGN KEY (visit_id) REFERENCES visits(id)
+) engine=InnoDB;

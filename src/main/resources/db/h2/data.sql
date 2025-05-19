@@ -52,3 +52,17 @@ INSERT INTO visits VALUES (default, 7, '2013-01-01', 'rabies shot');
 INSERT INTO visits VALUES (default, 8, '2013-01-02', 'rabies shot');
 INSERT INTO visits VALUES (default, 8, '2013-01-03', 'neutered');
 INSERT INTO visits VALUES (default, 7, '2013-01-04', 'spayed');
+
+-- Sample data for notifications table
+INSERT INTO notifications VALUES (1, 'Reminder: Your appointment with Dr. Carter for Leo is tomorrow at 10:00 AM', 'EMAIL', 'PENDING', '2025-05-20 10:00:00', NULL, 1, 1);
+INSERT INTO notifications VALUES (2, 'Reminder: Basil is due for annual checkup next week', 'SMS', 'SENT', '2025-05-15 09:00:00', '2025-05-15 09:05:23', 2, 2);
+INSERT INTO notifications VALUES (3, 'Time for Rosy''s heartworm medication', 'EMAIL', 'PENDING', '2025-05-25 08:00:00', NULL, 3, 3);
+INSERT INTO notifications VALUES (4, 'Reminder: Jewel has an appointment on Monday for vaccinations', 'SMS', 'FAILED', '2025-05-18 11:00:00', '2025-05-18 11:02:45', 3, 4);
+INSERT INTO notifications VALUES (5, 'Reminder: Iggy''s dental cleaning is scheduled for next Friday', 'EMAIL', 'SENT', '2025-05-10 14:00:00', '2025-05-10 14:01:12', 4, 5);
+
+-- Sample data for notification_schedules table
+INSERT INTO notification_schedules VALUES (1, 'Reminder: Your pet {petName} has an appointment tomorrow', 'EMAIL', '2025-06-15 09:00:00', 1, TRUE, 1, 1, 1);
+INSERT INTO notification_schedules VALUES (2, 'Time for {petName}''s annual checkup', 'SMS', '2025-06-20 10:00:00', NULL, TRUE, 2, 2, NULL);
+INSERT INTO notification_schedules VALUES (3, '{petName} is due for heartworm medication', 'BOTH', '2025-06-10 08:00:00', NULL, TRUE, 3, 3, NULL);
+INSERT INTO notification_schedules VALUES (4, 'Reminder: {petName}''s vaccines are due', 'EMAIL', '2025-07-05 11:00:00', 7, TRUE, 4, 5, 2);
+INSERT INTO notification_schedules VALUES (5, 'Reminder: {petName} has a follow-up appointment scheduled', 'SMS', '2025-07-15 14:00:00', 2, FALSE, 6, 7, 4);
