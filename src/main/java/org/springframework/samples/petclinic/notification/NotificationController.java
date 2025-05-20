@@ -201,19 +201,36 @@ public class NotificationController {
 				.ifPresent(notification::setPet);
 		}
 
-		// Save the notification with PENDING status
+		// Initially set status to PENDING
 		notification.setStatus(NotificationStatus.PENDING);
 		notificationRepository.save(notification);
 
-		// Process the notification message with template service
-		String processedMessage = templateService.processNotification(notification);
-		notification.setMessage(processedMessage);
+		// Process message template
+		notification.setMessage(templateService.processNotification(notification));
 
-		// Send the notification based on preference
+		// Handle preferences
+		NotificationPreference preference = owner.getNotificationPreference();
 		boolean emailSent = false;
 		boolean smsSent = false;
-		NotificationPreference preference = owner.getNotificationPreference();
 
+		// Early return if preference is NONE
+		if (preference == NotificationPreference.NONE) {
+			notificationRepository.save(notification); // Save with unchanged PENDING
+														// status
+
+			Map<String, Object> response = new HashMap<>();
+			response.put("notificationId", notification.getId());
+			response.put("ownerId", owner.getId());
+			response.put("status", notification.getStatus());
+			response.put("emailSent", false);
+			response.put("smsSent", false);
+			response.put("preference", preference);
+			response.put("message", "No notification sent: owner preference is set to NONE");
+
+			return ResponseEntity.ok(response);
+		}
+
+		// Try sending based on preference
 		if (preference == NotificationPreference.EMAIL || preference == NotificationPreference.BOTH) {
 			emailSent = emailNotificationService.send(notification);
 		}
@@ -222,10 +239,14 @@ public class NotificationController {
 			smsSent = smsNotificationService.send(notification);
 		}
 
-		// Update notification in repository with final status
+		// Update status if anything was sent
+		if (emailSent || smsSent) {
+			notification.setStatus(NotificationStatus.SENT);
+		}
+
 		notificationRepository.save(notification);
 
-		// Prepare response
+		// Prepare final response
 		Map<String, Object> response = new HashMap<>();
 		response.put("notificationId", notification.getId());
 		response.put("ownerId", owner.getId());
@@ -233,10 +254,6 @@ public class NotificationController {
 		response.put("emailSent", emailSent);
 		response.put("smsSent", smsSent);
 		response.put("preference", preference);
-
-		if (preference == NotificationPreference.NONE) {
-			response.put("message", "No notification sent: owner preference is set to NONE");
-		}
 
 		return ResponseEntity.ok(response);
 	}
